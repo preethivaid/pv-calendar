@@ -10,13 +10,6 @@ from pathlib import Path
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
 
-try:
-    import argparse
-    flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
-except ImportError:
-    flags = None
-
-
 # If modifying these scopes, delete your previously saved credentials
 # at ~/.credentials/calendar-python-quickstart.json
 SCOPES = 'https://www.googleapis.com/auth/calendar'
@@ -52,9 +45,4 @@ class GetCredentials:
             flow = client.flow_from_clientsecrets(tmp_secret_file, SCOPES)
             os.remove(tmp_secret_file)
             flow.user_agent = APPLICATION_NAME
-            if flags:
-                credentials = tools.run_flow(flow, store, flags)
-            else:  # Needed only for compatibility with Python 2.6
-                credentials = tools.run(flow, store)
-            print('Storing credentials to ' + credential_path)
         return credentials

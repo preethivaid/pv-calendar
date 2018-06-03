@@ -1,1 +1,1 @@
-gunicorn app:app
+web: gunicorn src.sms_handler:app
