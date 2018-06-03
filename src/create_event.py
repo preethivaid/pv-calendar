@@ -39,11 +39,11 @@ class CreateEvent:
             'location': '800 Howard St., San Francisco, CA 94103',
             'description': 'Preethi Test Event.',
             'start': {
-                'dateTime': '2018-06-05T09:00:00-07:00',
+                'dateTime': '2018-06-04T09:00:00-07:00',
                 'timeZone': 'America/Los_Angeles',
             },
             'end': {
-                'dateTime': '2018-06-05T17:00:00-07:00',
+                'dateTime': '2018-06-04T17:00:00-07:00',
                 'timeZone': 'America/Los_Angeles',
             },
             'recurrence': [
