@@ -34,10 +34,9 @@ class GetCredentials:
         credentials = store.get()
         if not credentials or credentials.invalid:
 
-            tmp_secret_file = tempfile.TemporaryFile()
-            with open(tmp_secret_file, 'w+') as api_file:
-                api_file.write(os.getenv('GOOGLE_API_SECRET'))
-            flow = client.flow_from_clientsecrets(tmp_secret_file, SCOPES)
-            tmp_secret_file.close()
+            with tempfile.NamedTemporaryFile() as api_temp_file:
+                api_temp_file.write(os.getenv('GOOGLE_API_SECRET'))
+                flow = client.flow_from_clientsecrets(api_temp_file, SCOPES)
+                api_temp_file.close()
             flow.user_agent = APPLICATION_NAME
         return credentials
