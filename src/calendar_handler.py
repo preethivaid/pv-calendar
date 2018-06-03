@@ -32,6 +32,9 @@ class CalendarHandler:
             text=event_text).execute()
 
     def get_summary(self, request_text):
+        """
+        Builds a summary text of the events for a given day
+        """
         # Parse the date text
         requested_date_text = request_text.split(' ', 1)[1]
         requested_date = dateparser.parse(requested_date_text)
@@ -46,9 +49,9 @@ class CalendarHandler:
                                                 timeMax=time_range_max,
                                                 timeMin=time_range_min,
                                                 pageToken=page_token).execute()
-            calendar_summary_text = ""
-            calendar_summary_text += '\n' + "------------------------"
-            calendar_summary_text += '\n' + "Summary for: {}".format(time_range_min)
+
+            calendar_summary_text = "------------------------"
+            calendar_summary_text += '\n' + "Summary for: {}".format(dateparser.parse(time_range_min).strftime("%A %B %d, %Y"))
             for index, event in enumerate(events['items']):
                 if 'summary' in event:
                     if 'date' in event['start']:
@@ -58,7 +61,7 @@ class CalendarHandler:
                     start_time = dateparser.parse(event['start'][date_type]).strftime("%-I:%M %p")
                     end_time = dateparser.parse(event['end'][date_type]).strftime("%-I:%M %p")
 
-                    calendar_summary_text += '\n' + "{}. {}, Start: {}, End: {}".format(index, event['summary'], start_time, end_time)
+                    calendar_summary_text += '\n\n' + "{}. {}, from  {} - {}".format(index, event['summary'], start_time, end_time)
             calendar_summary_text += '\n' + "------------------------"
             page_token = events.get('nextPageToken')
             if not page_token:
