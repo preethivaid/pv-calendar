@@ -19,4 +19,4 @@ def sms():
 
 
 def run():
-    app.run()
+    app.run(debug=True, port=33507)
