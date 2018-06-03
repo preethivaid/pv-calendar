@@ -3,8 +3,8 @@ import os
 
 import oauth2client
 from oauth2client import client
-from oauth2client import tools
 
+import tempfile
 from dotenv import load_dotenv
 from pathlib import Path
 env_path = Path('.') / '.env'
@@ -28,21 +28,16 @@ class GetCredentials:
         Returns:
             Credentials, the obtained credential.
         """
-        home_dir = os.path.expanduser('~')
-        credential_dir = os.path.join(home_dir, '.credentials')
-        if not os.path.exists(credential_dir):
-            os.makedirs(credential_dir)
-        credential_path = os.path.join(credential_dir,
-                                       'pv-calendar.json')
+        credential_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'pv-calendar-credentials.json')
 
         store = oauth2client.file.Storage(credential_path)
         credentials = store.get()
         if not credentials or credentials.invalid:
 
-            tmp_secret_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'google_api_secret.json')
+            tmp_secret_file = tempfile.TemporaryFile
             with open(tmp_secret_file, 'w+') as api_file:
                 api_file.write(os.getenv('GOOGLE_API_SECRET'))
             flow = client.flow_from_clientsecrets(tmp_secret_file, SCOPES)
-            os.remove(tmp_secret_file)
+            tmp_secret_file.close()
             flow.user_agent = APPLICATION_NAME
         return credentials
