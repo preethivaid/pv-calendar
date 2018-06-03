@@ -10,8 +10,8 @@ def sms():
     sms_request = request.form['Body']
     sms_response = MessagingResponse()
     if "summary" in sms_request.split(" ")[0].lower():
-        CalendarHandler().get_summary(sms_request)
-        sms_response.message('Here is the summary for that day: '.format(sms_request))
+        calendar_summary_text = CalendarHandler().get_summary(sms_request)
+        sms_response.message('Here is the summary for that day: {}'.format(calendar_summary_text))
     else:
         CalendarHandler().create_event(sms_request)
         sms_response.message('Added {} to calendar!'.format(sms_request))

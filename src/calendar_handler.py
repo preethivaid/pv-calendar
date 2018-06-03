@@ -46,21 +46,21 @@ class CalendarHandler:
                                                 timeMax=time_range_max,
                                                 timeMin=time_range_min,
                                                 pageToken=page_token).execute()
-            print("--------------------------------------")
-            print("Summary for: {}".format(time_range_min))
+            calendar_summary_text = ""
+            calendar_summary_text += '\n' + "------------------------"
+            calendar_summary_text += '\n' + "Summary for: {}".format(time_range_min)
             for index, event in enumerate(events['items']):
                 if 'summary' in event:
-                    start_time_field = event['start']
-                    end_time_field = event['end']
-                    if 'date' in start_time_field:
-                        start_time = dateparser.parse(start_time_field['date'])
-                        end_time = dateparser.parse(end_time_field['date'])
+                    if 'date' in event['start']:
+                        date_type = 'date'
                     else:
-                        start_time = dateparser.parse(start_time_field['dateTime'])
-                        end_time = dateparser.parse(end_time_field['dateTime'])
+                        date_type = 'dateTime'
+                    start_time = dateparser.parse(event['start'][date_type]).strftime("%-I:%M %p")
+                    end_time = dateparser.parse(event['end'][date_type]).strftime("%-I:%M %p")
 
-                    print("{}. {}, Start: {}, End: {}".format(index, event['summary'], start_time, end_time))
-            print("--------------------------------------")
+                    calendar_summary_text += '\n' + "{}. {}, Start: {}, End: {}".format(index, event['summary'], start_time, end_time)
+            calendar_summary_text += '\n' + "------------------------"
             page_token = events.get('nextPageToken')
             if not page_token:
                 break
+        return calendar_summary_text
