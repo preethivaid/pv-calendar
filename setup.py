@@ -1,10 +1,10 @@
-from distutils.core import setup
+# from distutils.core import setup
+from setuptools import setup, find_packages
 
 setup(
     name='pv-calendar',
     version='0.0.0',
-    packages=['src'],
-    package_dir={'': 'pv-calendar'},
+    packages=find_packages(),
     url='',
     license='',
     author='Preethi Vaidyanathan',
