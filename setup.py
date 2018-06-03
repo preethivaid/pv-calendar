@@ -15,6 +15,8 @@ setup(
         'certifi==2018.4.16',
         'chardet==3.0.4',
         'click==6.7',
+        'DateTime==4.2',
+        'dateparser==0.7.0',
         'Flask==1.0.2',
         'google-api-python-client==1.7.1',
         'google-auth==1.5.0',

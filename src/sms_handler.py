@@ -1,19 +1,21 @@
 from flask import Flask, request
 from twilio.twiml.messaging_response import MessagingResponse
-from src.create_event import CreateEvent
+from src.calendar_handler import CalendarHandler
 
 app = Flask(__name__)
 
 
 @app.route('/sms', methods=['POST'])
 def sms():
-    event_summary = request.form['Body']
-
-    CreateEvent.create_event(event_summary)
-
-    resp = MessagingResponse()
-    resp.message('Added {} to calendar!'.format(event_summary))
-    return str(resp)
+    sms_request = request.form['Body']
+    sms_response = MessagingResponse()
+    if "summary" in sms_request.split(" ")[0].lower():
+        CalendarHandler().get_summary(sms_request)
+        sms_response.message('Here is the summary for that day: '.format(sms_request))
+    else:
+        CalendarHandler().create_event(sms_request)
+        sms_response.message('Added {} to calendar!'.format(sms_request))
+    return str(sms_response)
 
 
 if __name__ == '__main__':
