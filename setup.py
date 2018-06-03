@@ -21,6 +21,7 @@ setup(
         'google-api-python-client==1.7.1',
         'google-auth==1.5.0',
         'google-auth-httplib2==0.0.3',
+        'gunicorn==19.8.1',
         'httplib2==0.11.3',
         'idna==2.6',
         'itsdangerous==0.24',
