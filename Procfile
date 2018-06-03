@@ -1,1 +1,1 @@
-web: gunicorn app:pv-calendar
+web: gunicorn wsgi.py
