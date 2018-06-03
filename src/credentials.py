@@ -4,6 +4,7 @@ import os
 import oauth2client
 from oauth2client import client
 
+import io
 import tempfile
 from dotenv import load_dotenv
 from pathlib import Path
@@ -35,7 +36,7 @@ class GetCredentials:
         if not credentials or credentials.invalid:
 
             with tempfile.NamedTemporaryFile() as api_temp_file:
-                api_temp_file.write(os.getenv('GOOGLE_API_SECRET'))
+                api_temp_file.write(io.StringIO(os.getenv('GOOGLE_API_SECRET')))
                 flow = client.flow_from_clientsecrets(api_temp_file, SCOPES)
                 api_temp_file.close()
             flow.user_agent = APPLICATION_NAME
