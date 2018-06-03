@@ -13,8 +13,8 @@ def sms():
         calendar_summary_text = CalendarHandler().get_summary(sms_request)
         sms_response.message(calendar_summary_text)
     else:
-        CalendarHandler().create_event(sms_request)
-        sms_response.message('Added {} to calendar!'.format(sms_request))
+        response_text = CalendarHandler().create_event(sms_request)
+        sms_response.message(response_text)
     return str(sms_response)
 
 

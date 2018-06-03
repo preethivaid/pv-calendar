@@ -27,9 +27,24 @@ class CalendarHandler:
         """
         Creates a Google Calendar event based on human readable text input.
         """
-        self.service.events().quickAdd(
+        event_created = self.service.events().quickAdd(
             calendarId='primary',
             text=event_text).execute()
+
+        if 'summary' in event_created:
+            if 'date' in event_created['start']:
+                date_type = 'date'
+            else:
+                date_type = 'dateTime'
+            start_time = dateparser.parse(event_created['start'][date_type]).strftime("%-I:%M %p")
+            end_time = dateparser.parse(event_created['end'][date_type]).strftime("%-I:%M %p")
+            start_date = dateparser.parse(event_created['start'][date_type]).strftime("%A %B %d, %Y")
+
+        response_text = "Created event '{}' from {} - {} on {}".format(event_created['summary'],
+                                                                       start_time,
+                                                                       end_time,
+                                                                       start_date)
+        return response_text
 
     def get_summary(self, request_text):
         """
@@ -51,7 +66,8 @@ class CalendarHandler:
                                                 pageToken=page_token).execute()
 
             calendar_summary_text = "------------------------"
-            calendar_summary_text += '\n' + "Summary for: {}".format(dateparser.parse(time_range_min).strftime("%A %B %d, %Y"))
+            calendar_summary_text += '\n' + "Summary for:" \
+                                            " {}".format(dateparser.parse(time_range_min).strftime("%A %B %d, %Y"))
             for index, event in enumerate(events['items']):
                 if 'summary' in event:
                     if 'date' in event['start']:
@@ -61,7 +77,8 @@ class CalendarHandler:
                     start_time = dateparser.parse(event['start'][date_type]).strftime("%-I:%M %p")
                     end_time = dateparser.parse(event['end'][date_type]).strftime("%-I:%M %p")
 
-                    calendar_summary_text += '\n\n' + "{}. {}, from  {} - {}".format(index, event['summary'], start_time, end_time)
+                    calendar_summary_text += '\n\n' + "{}. {}, from  " \
+                                                      "{} - {}".format(index, event['summary'], start_time, end_time)
             calendar_summary_text += '\n' + "------------------------"
             page_token = events.get('nextPageToken')
             if not page_token:
