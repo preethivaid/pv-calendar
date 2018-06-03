@@ -11,11 +11,6 @@ from pathlib import Path
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
 
-# If modifying these scopes, delete your previously saved credentials
-# at ~/.credentials/calendar-python-quickstart.json
-SCOPES = 'https://www.googleapis.com/auth/calendar'
-APPLICATION_NAME = 'Google Calendar API Python Quickstart'
-
 
 class GetCredentials:
 
@@ -29,17 +24,11 @@ class GetCredentials:
         Returns:
             Credentials, the obtained credential.
         """
-        credential_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'pv-calendar-credentials.json')
-
-        store = oauth2client.file.Storage(credential_path)
+        temp_file_name = tempfile.NamedTemporaryFile().name
+        with open(temp_file_name, 'a+') as api_temp_file:
+            api_temp_file.write(os.getenv('GOOGLE_CAL_AUTH'))
+            api_temp_file.seek(0)
+            store = oauth2client.file.Storage(temp_file_name)
+            api_temp_file.close()
         credentials = store.get()
-        if not credentials or credentials.invalid:
-            temp_file_name = tempfile.NamedTemporaryFile().name
-            with open(temp_file_name, 'a+') as api_temp_file:
-                api_temp_file.write(os.getenv('GOOGLE_API_SECRET'))
-                api_temp_file.seek(0)
-                flow = client.flow_from_clientsecrets(temp_file_name, SCOPES)
-                api_temp_file.close()
-            flow.user_agent = APPLICATION_NAME
-            credentials = tools.run_flow(flow, store)
         return credentials
