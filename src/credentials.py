@@ -2,7 +2,7 @@ from __future__ import print_function
 import os
 
 import oauth2client
-from oauth2client import client
+from oauth2client import client, tools
 
 import io
 import tempfile
@@ -34,10 +34,12 @@ class GetCredentials:
         store = oauth2client.file.Storage(credential_path)
         credentials = store.get()
         if not credentials or credentials.invalid:
-
-            with tempfile.NamedTemporaryFile() as api_temp_file:
-                api_temp_file.write(io.StringIO(os.getenv('GOOGLE_API_SECRET')))
-                flow = client.flow_from_clientsecrets(api_temp_file, SCOPES)
+            temp_file_name = tempfile.NamedTemporaryFile().name
+            with open(temp_file_name, 'a+') as api_temp_file:
+                api_temp_file.write(os.getenv('GOOGLE_API_SECRET'))
+                api_temp_file.seek(0)
+                flow = client.flow_from_clientsecrets(temp_file_name, SCOPES)
                 api_temp_file.close()
             flow.user_agent = APPLICATION_NAME
+            credentials = tools.run_flow(flow, store)
         return credentials
