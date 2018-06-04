@@ -40,10 +40,11 @@ class CalendarHandler:
             end_time = dateparser.parse(event_created['end'][date_type]).strftime("%-I:%M %p")
             start_date = dateparser.parse(event_created['start'][date_type]).strftime("%A %B %d, %Y")
 
-        response_text = "Created event '{}' from {} - {} on {}".format(event_created['summary'],
-                                                                       start_time,
-                                                                       end_time,
-                                                                       start_date)
+        response_text = "------------------------"
+        response_text += '\n' + "Created event '{}' from {} - {} on {}".format(event_created['summary'],
+                                                                               start_time,
+                                                                               end_time,
+                                                                               start_date)
         return response_text
 
     def get_summary(self, request_text):
@@ -52,7 +53,7 @@ class CalendarHandler:
         """
         # Parse the date text
         requested_date_text = request_text.split(' ', 1)[1]
-        requested_date = dateparser.parse(requested_date_text)
+        requested_date = dateparser.parse(requested_date_text, settings={'PREFER_DATES_FROM': 'future'})
         # Set the clock back to midnight
         requested_date.replace(hour=0, minute=0, second=0, microsecond=0)
         # Get the date summary
