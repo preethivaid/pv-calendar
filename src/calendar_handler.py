@@ -56,10 +56,10 @@ class CalendarHandler:
         requested_date_text = request_text.split(' ', 1)[1]
         requested_date = dateparser.parse(requested_date_text, settings={'PREFER_DATES_FROM': 'future'})
         if not requested_date:
-            calendar_summary_text += '\n' + "Oops, I couldn't parse '{}'. Try again?".format(requested_date_textg)
+            calendar_summary_text += '\n' + "Oops, I couldn't parse '{}'. Try again?".format(requested_date_text)
         else:
             # Set the clock back to midnight
-            requested_date.replace(hour=0, minute=0, second=0, microsecond=0)
+            requested_date = requested_date.replace(hour=0, minute=0, second=0, microsecond=0)
             # Get the date summary
             page_token = None
             while True:
