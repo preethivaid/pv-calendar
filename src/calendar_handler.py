@@ -100,7 +100,7 @@ class CalendarHandler:
                         end_time = dateparser.parse(event['end'][date_type]).strftime("%-I:%M %p")
 
                         calendar_summary_text += '\n\n' + "{}. {}, from  " \
-                                                          "{} - {}".format(index, event['summary'], start_time, end_time)
+                                                          "{} - {}".format(index+1, event['summary'], start_time, end_time)
                 page_token = events.get('nextPageToken')
                 if not page_token:
                     break
