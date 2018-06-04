@@ -3,7 +3,7 @@ from __future__ import print_function
 from pathlib import Path
 
 import httplib2
-from apiclient import discovery
+from apiclient import discovery, errors
 from dotenv import load_dotenv
 
 import datetime
@@ -45,6 +45,20 @@ class CalendarHandler:
                                                                                start_time,
                                                                                end_time,
                                                                                start_date)
+        response_text += '\n' + "------------------------"
+        response_text += '\n' + "Event Id: {}".format(event_created['id'])
+        return response_text
+
+    def delete_event(self, request_text):
+        response_text = "------------------------"
+        event_id = request_text.split(' ', 1)[1]
+        try:
+            self.service.events().delete(calendarId='primary', eventId=event_id).execute()
+        except:
+            errors.HttpError
+            response_text += "Event id '{}' not found! Sorry!".format(event_id)
+            return response_text
+        response_text += "Deleted event!"
         return response_text
 
     def get_summary(self, request_text):

@@ -12,6 +12,9 @@ def sms():
     if "summary" in sms_request.split(" ")[0].lower():
         calendar_summary_text = CalendarHandler().get_summary(sms_request)
         sms_response.message(calendar_summary_text)
+    elif "delete" in sms_request.split(" ")[0].lower():
+        calendar_summary_text = CalendarHandler().delete_event(sms_request)
+        sms_response.message(calendar_summary_text)
     else:
         response_text = CalendarHandler().create_event(sms_request)
         sms_response.message(response_text)
