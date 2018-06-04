@@ -51,37 +51,40 @@ class CalendarHandler:
         """
         Builds a summary text of the events for a given day
         """
+        calendar_summary_text = "------------------------"
         # Parse the date text
         requested_date_text = request_text.split(' ', 1)[1]
         requested_date = dateparser.parse(requested_date_text, settings={'PREFER_DATES_FROM': 'future'})
-        # Set the clock back to midnight
-        requested_date.replace(hour=0, minute=0, second=0, microsecond=0)
-        # Get the date summary
-        page_token = None
-        while True:
-            time_range_min = pytz.UTC.localize(requested_date).isoformat()
-            time_range_max = pytz.UTC.localize(requested_date + datetime.timedelta(days=1)).isoformat()
-            events = self.service.events().list(calendarId='primary',
-                                                timeMax=time_range_max,
-                                                timeMin=time_range_min,
-                                                pageToken=page_token).execute()
+        if not requested_date:
+            calendar_summary_text += '\n' + "Oops, I couldn't parse '{}'. Try again?".format(requested_date_textg)
+        else:
+            # Set the clock back to midnight
+            requested_date.replace(hour=0, minute=0, second=0, microsecond=0)
+            # Get the date summary
+            page_token = None
+            while True:
+                time_range_min = pytz.UTC.localize(requested_date).isoformat()
+                time_range_max = pytz.UTC.localize(requested_date + datetime.timedelta(days=1)).isoformat()
+                events = self.service.events().list(calendarId='primary',
+                                                    timeMax=time_range_max,
+                                                    timeMin=time_range_min,
+                                                    pageToken=page_token).execute()
 
-            calendar_summary_text = "------------------------"
-            calendar_summary_text += '\n' + "Summary for:" \
-                                            " {}".format(dateparser.parse(time_range_min).strftime("%A %B %d, %Y"))
-            for index, event in enumerate(events['items']):
-                if 'summary' in event:
-                    if 'date' in event['start']:
-                        date_type = 'date'
-                    else:
-                        date_type = 'dateTime'
-                    start_time = dateparser.parse(event['start'][date_type]).strftime("%-I:%M %p")
-                    end_time = dateparser.parse(event['end'][date_type]).strftime("%-I:%M %p")
+                calendar_summary_text = "------------------------"
+                calendar_summary_text += '\n' + "Summary for:" \
+                                                " {}".format(dateparser.parse(time_range_min).strftime("%A %B %d, %Y"))
+                for index, event in enumerate(events['items']):
+                    if 'summary' in event:
+                        if 'date' in event['start']:
+                            date_type = 'date'
+                        else:
+                            date_type = 'dateTime'
+                        start_time = dateparser.parse(event['start'][date_type]).strftime("%-I:%M %p")
+                        end_time = dateparser.parse(event['end'][date_type]).strftime("%-I:%M %p")
 
-                    calendar_summary_text += '\n\n' + "{}. {}, from  " \
-                                                      "{} - {}".format(index, event['summary'], start_time, end_time)
-            calendar_summary_text += '\n' + "------------------------"
-            page_token = events.get('nextPageToken')
-            if not page_token:
-                break
+                        calendar_summary_text += '\n\n' + "{}. {}, from  " \
+                                                          "{} - {}".format(index, event['summary'], start_time, end_time)
+                page_token = events.get('nextPageToken')
+                if not page_token:
+                    break
         return calendar_summary_text
