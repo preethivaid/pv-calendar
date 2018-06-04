@@ -68,6 +68,8 @@ class CalendarHandler:
                 events = self.service.events().list(calendarId='primary',
                                                     timeMax=time_range_max,
                                                     timeMin=time_range_min,
+                                                    orderBy='startTime',
+                                                    singleEvents=True,
                                                     pageToken=page_token).execute()
 
                 calendar_summary_text = "------------------------"
