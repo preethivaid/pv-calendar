@@ -50,6 +50,9 @@ class CalendarHandler:
         return response_text
 
     def delete_event(self, request_text):
+        """
+        Delete an event given an event id
+        """
         response_text = "------------------------"
         event_id = request_text.split(' ', 1)[1]
         try:
