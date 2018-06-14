@@ -1,6 +1,15 @@
+
+
+
+
+
+
+
+
 from flask import Flask, request
 from twilio.twiml.messaging_response import MessagingResponse
 from src.calendar_handler import CalendarHandler
+from src.utils import format_message
 
 app = Flask(__name__)
 
@@ -20,7 +29,7 @@ def sms():
             response_text = CalendarHandler().create_event(sms_request)
             sms_response.message(response_text)
     else:
-        sms_response.message('Nice try buddy!')
+        sms_response.message(format_message('Nice try buddy!'))
     return str(sms_response)
 
 

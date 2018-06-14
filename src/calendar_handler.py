@@ -11,6 +11,7 @@ import dateparser
 import pytz
 
 from src.credentials import GetCredentials as Cred
+from src.utils import format_message
 
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
@@ -40,44 +41,42 @@ class CalendarHandler:
             end_time = dateparser.parse(event_created['end'][date_type]).strftime("%-I:%M %p")
             start_date = dateparser.parse(event_created['start'][date_type]).strftime("%A %B %d, %Y")
 
-        response_text = "------------------------"
-        response_text += '\n' + "Created event '{}' from {} - {} on {}".format(event_created['summary'],
-                                                                               start_time,
-                                                                               end_time,
-                                                                               start_date)
-        response_text += '\n' + "------------------------"
-        response_text += '\n' + "Event Id: {}".format(event_created['id'])
+        response_text = format_message("Created event '{}' from {} - {} on {}".format(event_created['summary'],
+                                                                                      start_time,
+                                                                                      end_time,
+                                                                                      start_date))
+        response_text += format_message("Event Id: {}".format(event_created['id']))
         return response_text
 
     def delete_event(self, request_text):
         """
         Delete an event given an event id
         """
-        response_text = "------------------------"
         event_id = request_text.split(' ', 1)[1]
         try:
             self.service.events().delete(calendarId='primary', eventId=event_id).execute()
         except:
             errors.HttpError
-            response_text += "Event id '{}' not found! Sorry!".format(event_id)
+            response_text = format_message("Event id '{}' not found! Sorry!".format(event_id))
             return response_text
-        response_text += "Deleted event!"
+            response_text = format_message("Deleted event!")
         return response_text
 
     def get_summary(self, request_text):
         """
         Builds a summary text of the events for a given day
         """
-        calendar_summary_text = "------------------------"
         # Parse the date text
         requested_date_text = request_text.split(' ', 1)[1]
         requested_date = dateparser.parse(requested_date_text, settings={'PREFER_DATES_FROM': 'future'})
         if not requested_date:
-            calendar_summary_text += '\n' + "Oops, I couldn't parse '{}'. Try again?".format(requested_date_text)
+            calendar_summary_text = format_message("Oops, I couldn't parse '{}'. Try again?".format(
+                requested_date_text))
         else:
             # Set the clock back to midnight
             requested_date = requested_date.replace(hour=0, minute=0, second=0, microsecond=0)
             # Get the date summary
+            calendar_summary_text = format_message("Summary for:")
             page_token = None
             while True:
                 time_range_min = pytz.UTC.localize(requested_date).isoformat()
@@ -89,9 +88,7 @@ class CalendarHandler:
                                                     singleEvents=True,
                                                     pageToken=page_token).execute()
 
-                calendar_summary_text = "------------------------"
-                calendar_summary_text += '\n' + "Summary for:" \
-                                                " {}".format(dateparser.parse(time_range_min).strftime("%A %B %d, %Y"))
+                calendar_summary_text += " {}".format(dateparser.parse(time_range_min).strftime("%A %B %d, %Y"))
                 for index, event in enumerate(events['items']):
                     if 'summary' in event:
                         if 'date' in event['start']:
