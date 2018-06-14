@@ -2,9 +2,6 @@ from __future__ import print_function
 import os
 
 import oauth2client
-from oauth2client import client, tools
-
-import io
 import tempfile
 from dotenv import load_dotenv
 from pathlib import Path
