@@ -22,7 +22,6 @@ class CalendarHandler:
         credentials = Cred.get_credentials()
         http = credentials.authorize(httplib2.Http())
         self.service = discovery.build('calendar', 'v3', http=http)
-        self.previous_event_id = None
 
     def create_event(self, event_text):
         """
@@ -46,18 +45,21 @@ class CalendarHandler:
                                                                                start_time,
                                                                                end_time,
                                                                                start_date)
-        self.previous_event_id = event_created['id']
+        response_text += '\n' + "------------------------"
+        response_text += '\n' + "Event Id: {}".format(event_created['id'])
         return response_text
 
-    def delete_event(self):
+    def delete_event(self, request_text):
         """
-        Delete the previous event
+        Delete an event given an event id
         """
         response_text = "------------------------"
+        event_id = request_text.split(' ', 1)[1]
         try:
-            self.service.events().delete(calendarId='primary', eventId=self.previous_event_id).execute()
-        except TypeError:
-            response_text += "Unable to delete previous event, sorry bud!"
+            self.service.events().delete(calendarId='primary', eventId=event_id).execute()
+        except:
+            errors.HttpError
+            response_text += "Event id '{}' not found! Sorry!".format(event_id)
             return response_text
         response_text += "Deleted event!"
         return response_text
@@ -100,7 +102,7 @@ class CalendarHandler:
                         end_time = dateparser.parse(event['end'][date_type]).strftime("%-I:%M %p")
 
                         calendar_summary_text += '\n\n' + "{}. {}, from  " \
-                                                          "{} - {}".format(index+1, event['summary'], start_time, end_time)
+                                                          "{} - {}".format(index, event['summary'], start_time, end_time)
                 page_token = events.get('nextPageToken')
                 if not page_token:
                     break
