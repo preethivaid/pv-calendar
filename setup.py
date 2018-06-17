@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 setup(
     name='pv-calendar',
     version='0.0.0',
-    packages=find_packages(),
+    packages=[],
     url='',
     license='',
     author='Preethi Vaidyanathan',
@@ -18,7 +18,7 @@ setup(
         'DateTime==4.2',
         'dateparser==0.7.0',
         'Flask==1.0.2',
-        'google-api-python-client==1.7.1',
+        'google-api-python-client==1.7.3',
         'google-auth==1.5.0',
         'google-auth-httplib2==0.0.3',
         'gunicorn==19.8.1',
@@ -40,5 +40,6 @@ setup(
         'twilio==6.14.3',
         'uritemplate==3.0.0',
         'urllib3==1.22',
-        'Werkzeug==0.14.1'],
+        'Werkzeug==0.14.1',
+        'xmltodict==0.11.0'],
 )
