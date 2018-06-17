@@ -20,7 +20,7 @@ load_dotenv(dotenv_path=env_path)
 class CalendarHandler:
 
     def __init__(self):
-        credentials = Cred.get_credentials()
+        credentials = Cred().get_credentials('GOOGLE_CAL_AUTH')
         http = credentials.authorize(httplib2.Http())
         self.service = discovery.build('calendar', 'v3', http=http)
 
