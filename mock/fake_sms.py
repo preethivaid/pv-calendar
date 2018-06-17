@@ -12,11 +12,10 @@ class FakeSms:
             '/sms',
             data=dict(Body=args.sms_body,
                       From=args.phone_number))
-        print("======")
-        print((response.data))
-        print("======")
         parsed_response = xmltodict.parse(response.data)["Response"]["Message"]
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print(parsed_response)
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

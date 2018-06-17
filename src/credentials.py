@@ -4,8 +4,8 @@ import os
 import oauth2client
 import tempfile
 from dotenv import load_dotenv
-from pathlib import Path
-env_path = Path('.') / '.env'
+this_dir = os.path.dirname(os.path.realpath(__file__))
+env_path = os.path.join(this_dir, '..', '.env')
 load_dotenv(dotenv_path=env_path)
 
 
