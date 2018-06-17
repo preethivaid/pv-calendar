@@ -1,10 +1,7 @@
 from __future__ import print_function
 
-from pathlib import Path
-
 import httplib2
 from apiclient import discovery, errors
-from dotenv import load_dotenv
 
 import datetime
 import dateparser
@@ -12,15 +9,13 @@ import pytz
 
 from src.credentials import GetCredentials as Cred
 from src.utils import format_message
-
-env_path = Path('.') / '.env'
-load_dotenv(dotenv_path=env_path)
+from settings import google_cal_auth
 
 
 class CalendarHandler:
 
     def __init__(self):
-        credentials = Cred().get_credentials('GOOGLE_CAL_AUTH')
+        credentials = Cred().get_credentials(google_cal_auth)
         http = credentials.authorize(httplib2.Http())
         self.service = discovery.build('calendar', 'v3', http=http)
 

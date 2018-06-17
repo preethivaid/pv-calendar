@@ -21,7 +21,6 @@ setup(
         "cryptography==2.2.2",
         "dateparser==0.7.0",
         "DateTime==4.2",
-        "fabric==1.14.0",
         "Flask==1.0.2",
         "google-api-python-client==1.7.3",
         "google-auth==1.5.0",

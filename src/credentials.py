@@ -4,15 +4,10 @@ import os
 import oauth2client
 import tempfile
 
-this_dir = os.path.dirname(os.path.realpath(__file__))
-env_path = os.path.join(this_dir, '..', '.env')
-from dotenv import load_dotenv
-load_dotenv(dotenv_path=env_path)
-
-
 from oauth2client import client
 from oauth2client import tools
 SCOPES = 'https://www.googleapis.com/auth/calendar'
+this_dir = os.path.dirname(os.path.realpath(__file__))
 CLIENT_SECRET_FILE = os.path.join(this_dir, 'client_secret.json')
 APPLICATION_NAME = 'pv-calendar'
 
@@ -29,11 +24,10 @@ class GetCredentials:
             Credentials, the obtained credential.
         """
         temp_file_name = tempfile.NamedTemporaryFile().name
-        env_secrets = os.getenv(auth_key)
         store = None
-        if env_secrets:
+        if auth_key:
             with open(temp_file_name, 'a+') as api_temp_file:
-                api_temp_file.write(env_secrets)
+                api_temp_file.write(auth_key)
                 api_temp_file.seek(0)
                 store = oauth2client.file.Storage(temp_file_name)
                 api_temp_file.close()
