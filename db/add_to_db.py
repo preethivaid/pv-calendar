@@ -1,16 +1,24 @@
 import os
 import psycopg2
+this_dir = os.path.dirname(os.path.realpath(__file__))
+env_path = os.path.join(this_dir, '..', '.env')
+from dotenv import load_dotenv
+load_dotenv(dotenv_path=env_path)
+
+google_cal_auth = os.getenv('GOOGLE_CAL_AUTH')
 
 
 class AddToDb:
 
     def __init__(self):
-        self.this_dir = os.path.dirname(os.path.realpath(__file__))
-        self.conn = psycopg2.connect("dbname='test_db' user='test_user' host='localhost' password=''")
+        self.conn = psycopg2.connect("dbname={} user={} host={} password={}".format(os.getenv('dbname'),
+                                                                                    os.getenv('user'),
+                                                                                    os.getenv('host'),
+                                                                                    os.getenv('password')))
         self.cursor = self.conn.cursor()
 
     def create_secrets_table(self):
-        schema_file = os.path.join(self.this_dir, "schema.sql")
+        schema_file = os.path.join(this_dir, "schema.sql")
         self.cursor.execute(open(schema_file, "r").read())
         self.conn.commit()
 
@@ -35,7 +43,8 @@ class AddToDb:
 
 
 if __name__=="__main__":
-    # AddToDb().drop_table()
-    # AddToDb().add_secret('test1', 'test2')
-    AddToDb().read_secret('test1')
+    # AddToDb().drop_secrets_table()
+    # AddToDb().create_secrets_table()
+    AddToDb().add_secret('test1', 'test2')
+    # AddToDb().read_secret('test1')
     # AddToDb().add_to_table('test_key', 'test_val')
