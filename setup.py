@@ -40,5 +40,5 @@ setup(
         'twilio==6.14.3',
         'uritemplate==3.0.0',
         'urllib3==1.22',
-        'Werkzeug==0.14.1'],
+        'Werkzeug==0.15.3'],
 )
