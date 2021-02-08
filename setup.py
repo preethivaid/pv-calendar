@@ -22,7 +22,7 @@ setup(
         'google-auth==1.5.0',
         'google-auth-httplib2==0.0.3',
         'gunicorn==19.8.1',
-        'httplib2==0.11.3',
+        'httplib2==0.19.0',
         'idna==2.6',
         'itsdangerous==0.24',
         'Jinja2==2.10',
