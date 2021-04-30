@@ -35,7 +35,7 @@ setup(
         'python-dotenv==0.8.2',
         'pytz==2018.4',
         'requests==2.18.4',
-        'rsa==3.4.2',
+        'rsa==4.7',
         'six==1.11.0',
         'twilio==6.14.3',
         'uritemplate==3.0.0',
